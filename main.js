@@ -9,6 +9,8 @@ class Breakout extends Phaser.Scene {
     this.extraBalls = [];
     this.wideTimer = null;
     this.slowTimer = null;
+    this.startTime = null;
+    this.winTexts = [];
   }
 
   preload() {
@@ -19,6 +21,9 @@ class Breakout extends Phaser.Scene {
     this.load.image("brick_red", "assets/brickF54E00.png");
     this.load.image("brick_grey", "assets/brickBFBFBC.png");
     this.load.image("brick_white", "assets/brickEEEFE9.png");
+    this.load.image("powerup_slow", "assets/hourglass.png");
+    this.load.image("powerup_multi", "assets/three.png");
+    this.load.image("powerup_wide", "assets/expand.png");
   }
 
   create() {
@@ -27,24 +32,10 @@ class Breakout extends Phaser.Scene {
 
     //  Generate a paddle texture
     const gfx = this.make.graphics({ x: 0, y: 0, add: false });
-    gfx.fillStyle(0xffffff);
-    gfx.fillRect(0, 0, 104, 24);
+    gfx.fillStyle(0x151515);
+    gfx.fillRoundedRect(0, 0, 104, 24, 12);
     gfx.generateTexture("paddle", 104, 24);
     gfx.destroy();
-
-    //  Generate power-up textures
-    const powerupTypes = [
-      { key: "powerup_wide", color: 0x00ff00 },
-      { key: "powerup_multi", color: 0x00ffff },
-      { key: "powerup_slow", color: 0xffff00 },
-    ];
-    powerupTypes.forEach(({ key, color }) => {
-      const g = this.make.graphics({ x: 0, y: 0, add: false });
-      g.fillStyle(color);
-      g.fillCircle(10, 10, 10);
-      g.generateTexture(key, 20, 20);
-      g.destroy();
-    });
 
     //  Create the bricks in a 10x6 grid
     this.bricks = this.physics.add.staticGroup();
@@ -129,6 +120,7 @@ class Breakout extends Phaser.Scene {
         if (this.ball.getData("onPaddle")) {
           this.ball.setVelocity(-75, -300);
           this.ball.setData("onPaddle", false);
+          this.startTime = this.time.now;
         }
       },
       this,
@@ -147,11 +139,12 @@ class Breakout extends Phaser.Scene {
         "powerup_" + powerupType,
       );
       pu.setData("type", powerupType);
+      pu.setDisplaySize(20, 20);
       pu.body.setVelocityY(150);
     }
 
     if (this.bricks.countActive() === 0) {
-      this.resetLevel();
+      this.winGame();
     }
   }
 
@@ -216,6 +209,68 @@ class Breakout extends Phaser.Scene {
         this.slowTimer = null;
       });
     }
+  }
+
+  winGame() {
+    const elapsed = ((this.time.now - this.startTime) / 1000).toFixed(1);
+    this.clearPowerupEffects();
+    this.physics.pause();
+    this.ball.setVisible(false);
+
+    const centerX = 400;
+    const textStyle = {
+      fontFamily: "Arial",
+      color: "#151515",
+      align: "center",
+    };
+
+    const winText = this.add
+      .text(centerX, 220, "You won!", {
+        ...textStyle,
+        fontSize: "48px",
+        fontStyle: "bold",
+      })
+      .setOrigin(0.5);
+    const timeText = this.add
+      .text(centerX, 280, "Time: " + elapsed + "s", {
+        ...textStyle,
+        fontSize: "28px",
+      })
+      .setOrigin(0.5);
+    const promptText = this.add
+      .text(centerX, 330, "Play again? (y/n)", {
+        ...textStyle,
+        fontSize: "22px",
+      })
+      .setOrigin(0.5);
+    this.winTexts = [winText, timeText, promptText];
+
+    const yKey = this.input.keyboard.addKey("Y");
+    const nKey = this.input.keyboard.addKey("N");
+
+    yKey.once("down", () => {
+      this.winTexts.forEach((t) => t.destroy());
+      this.winTexts = [];
+      this.input.keyboard.removeKey("Y");
+      this.input.keyboard.removeKey("N");
+      this.physics.resume();
+      this.resetLevel();
+      this.startTime = null;
+    });
+
+    nKey.once("down", () => {
+      this.winTexts.forEach((t) => t.destroy());
+      this.winTexts = [];
+      this.input.keyboard.removeKey("Y");
+      this.input.keyboard.removeKey("N");
+      const thanks = this.add
+        .text(centerX, 280, "Thanks for playing!", {
+          ...textStyle,
+          fontSize: "36px",
+        })
+        .setOrigin(0.5);
+      this.winTexts = [thanks];
+    });
   }
 
   clearPowerupEffects() {
