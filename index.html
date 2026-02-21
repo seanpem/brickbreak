@@ -120,11 +120,9 @@
                     {
                         api_host: "https://us.i.posthog.com",
                         session_recording: {
-                            recordCanvas: true,
-                            sampling: { canvas: 4 },
-                            dataURLOptions: {
-                                type: "image/webp",
-                                quality: 0.6,
+                            captureCanvas: {
+                                canvasFps: 4,
+                                canvasQuality: "0.6",
                             },
                             maskAllInputs: false,
                             maskTextSelector: "",

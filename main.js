@@ -390,6 +390,9 @@ const config = {
   height: 600,
   backgroundColor: "#F5F0E8",
   parent: "posthog-brickbreak",
+  render: {
+    preserveDrawingBuffer: true,
+  },
   scene: [Breakout],
   physics: {
     default: "arcade",
