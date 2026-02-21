@@ -77,9 +77,6 @@
                     }),
                     (e.__SV = 1));
             })(document, window.posthog || []);
-            posthog.init("phc_TdVDR9kcgZmTpjNfeCzdhxuN9E7fLdlJybgp0lzLcgD", {
-                api_host: "https://us.i.posthog.com",
-            });
         </script>
     </head>
     <body>
@@ -116,5 +113,34 @@
         </div>
         <script src="https://cdn.jsdelivr.net/npm/phaser@3.85.0/dist/phaser.min.js"></script>
         <script src="main.js"></script>
+        <script>
+            function initPostHog() {
+                posthog.init(
+                    "phc_TdVDR9kcgZmTpjNfeCzdhxuN9E7fLdlJybgp0lzLcgD",
+                    {
+                        api_host: "https://us.i.posthog.com",
+                        session_recording: {
+                            recordCanvas: true,
+                            sampling: { canvas: 4 },
+                            dataURLOptions: {
+                                type: "image/webp",
+                                quality: 0.6,
+                            },
+                        },
+                    },
+                );
+            }
+
+            (function waitForCanvas() {
+                var canvas = document.querySelector(
+                    "#posthog-brickbreak canvas",
+                );
+                if (canvas) {
+                    initPostHog();
+                } else {
+                    requestAnimationFrame(waitForCanvas);
+                }
+            })();
+        </script>
     </body>
 </html>
