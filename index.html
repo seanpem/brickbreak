@@ -126,21 +126,14 @@
                                 type: "image/webp",
                                 quality: 0.6,
                             },
+                            maskAllInputs: false,
+                            maskTextSelector: "",
                         },
                     },
                 );
             }
 
-            (function waitForCanvas() {
-                var canvas = document.querySelector(
-                    "#posthog-brickbreak canvas",
-                );
-                if (canvas) {
-                    initPostHog();
-                } else {
-                    requestAnimationFrame(waitForCanvas);
-                }
-            })();
+            game.events.on("ready", initPostHog);
         </script>
     </body>
 </html>
