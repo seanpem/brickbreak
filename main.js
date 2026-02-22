@@ -240,6 +240,7 @@ class Breakout extends Phaser.Scene {
 
   winGame() {
     const elapsed = ((this.time.now - this.startTime) / 1000).toFixed(1);
+    posthog.capture("game_won", { time_seconds: parseFloat(elapsed) });
     this.clearPowerupEffects();
     this.physics.pause();
     this.ball.setVisible(false);
@@ -301,6 +302,7 @@ class Breakout extends Phaser.Scene {
   }
 
   triggerEasterEgg() {
+    posthog.capture("secret_found");
     this.clearPowerupEffects();
     this.physics.pause();
 
