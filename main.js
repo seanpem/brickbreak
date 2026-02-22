@@ -24,6 +24,7 @@ class Breakout extends Phaser.Scene {
     this.load.image("powerup_slow", "assets/hourglass.png");
     this.load.image("powerup_multi", "assets/three.png");
     this.load.image("powerup_wide", "assets/expand.png");
+    this.load.image("powerup_bomb", "assets/bomb.png");
     this.load.image("secret_hog", "assets/secret_hog.png");
   }
 
@@ -50,6 +51,9 @@ class Breakout extends Phaser.Scene {
       "brick_white",
     ];
     const powerupKeys = ["wide", "multi", "slow"];
+    if (posthog.getFeatureFlag("bomb-power-up") === "test") {
+      powerupKeys.push("bomb");
+    }
     for (let row = 0; row < brickKeys.length; row++) {
       for (let col = 0; col < 10; col++) {
         const x = 112 + col * 64;
@@ -235,6 +239,18 @@ class Breakout extends Phaser.Scene {
         });
         this.slowTimer = null;
       });
+    } else if (type === "bomb") {
+      const active = [];
+      this.bricks.children.each((b) => {
+        if (b.active) active.push(b);
+      });
+      Phaser.Utils.Array.Shuffle(active);
+      active.slice(0, Math.min(10, active.length)).forEach((b) => {
+        b.disableBody(true, true);
+      });
+      if (this.bricks.countActive() === 0) {
+        this.winGame();
+      }
     }
   }
 
@@ -361,6 +377,9 @@ class Breakout extends Phaser.Scene {
     this.resetBall();
 
     const powerupKeys = ["wide", "multi", "slow"];
+    if (posthog.getFeatureFlag("bomb-power-up") === "test") {
+      powerupKeys.push("bomb");
+    }
     this.bricks.children.each((brick) => {
       brick.enableBody(false, 0, 0, true, true);
       //  Re-assign random power-ups
