@@ -11,6 +11,7 @@ class Breakout extends Phaser.Scene {
     this.slowTimer = null;
     this.startTime = null;
     this.winTexts = [];
+    this.bombEnabled = false;
   }
 
   preload() {
@@ -29,6 +30,11 @@ class Breakout extends Phaser.Scene {
   }
 
   create() {
+    //  Wait for PostHog feature flags to load
+    posthog.onFeatureFlags(() => {
+      this.bombEnabled = posthog.getFeatureFlag("bomb-power-up") === "test";
+    });
+
     //  Enable world bounds, but disable the floor
     this.physics.world.setBoundsCollision(true, true, true, false);
 
@@ -51,7 +57,7 @@ class Breakout extends Phaser.Scene {
       "brick_white",
     ];
     const powerupKeys = ["wide", "multi", "slow"];
-    if (posthog.getFeatureFlag("bomb-power-up") === "test") {
+    if (this.bombEnabled) {
       powerupKeys.push("bomb");
     }
     for (let row = 0; row < brickKeys.length; row++) {
@@ -377,7 +383,7 @@ class Breakout extends Phaser.Scene {
     this.resetBall();
 
     const powerupKeys = ["wide", "multi", "slow"];
-    if (posthog.getFeatureFlag("bomb-power-up") === "test") {
+    if (this.bombEnabled) {
       powerupKeys.push("bomb");
     }
     this.bricks.children.each((brick) => {
