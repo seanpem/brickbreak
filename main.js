@@ -24,6 +24,7 @@ class Breakout extends Phaser.Scene {
     this.load.image("powerup_slow", "assets/hourglass.png");
     this.load.image("powerup_multi", "assets/three.png");
     this.load.image("powerup_wide", "assets/expand.png");
+    this.load.image("secret_hog", "assets/secret_hog.png");
   }
 
   create() {
@@ -125,6 +126,32 @@ class Breakout extends Phaser.Scene {
       },
       this,
     );
+
+    //  Konami code listener
+    const K = Phaser.Input.Keyboard.KeyCodes;
+    this.konamiSequence = [
+      K.UP,
+      K.UP,
+      K.DOWN,
+      K.DOWN,
+      K.LEFT,
+      K.RIGHT,
+      K.LEFT,
+      K.RIGHT,
+      K.B,
+      K.A,
+    ];
+    this.konamiIndex = 0;
+    this.input.keyboard.on("keydown", (event) => {
+      if (event.keyCode === this.konamiSequence[this.konamiIndex]) {
+        this.konamiIndex++;
+        if (this.konamiIndex === this.konamiSequence.length) {
+          this.triggerEasterEgg();
+        }
+      } else {
+        this.konamiIndex = 0;
+      }
+    });
   }
 
   hitBrick(ball, brick) {
@@ -271,6 +298,31 @@ class Breakout extends Phaser.Scene {
         .setOrigin(0.5);
       this.winTexts = [thanks];
     });
+  }
+
+  triggerEasterEgg() {
+    this.clearPowerupEffects();
+    this.physics.pause();
+
+    //  Hide all game objects
+    this.ball.setVisible(false);
+    this.ball.body.enable = false;
+    this.paddle.setVisible(false);
+    this.bricks.children.each((brick) => brick.disableBody(true, true));
+    this.winTexts.forEach((t) => t.destroy());
+    this.winTexts = [];
+
+    //  Display the secret hoggie
+    this.add.image(400, 260, "secret_hog").setDisplaySize(350, 350);
+    this.add
+      .text(400, 470, "You've found the secret hoggie", {
+        fontFamily: "Arial",
+        fontSize: "28px",
+        fontStyle: "bold",
+        color: "#151515",
+        align: "center",
+      })
+      .setOrigin(0.5);
   }
 
   clearPowerupEffects() {
