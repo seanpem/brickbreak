@@ -476,6 +476,9 @@ const config = {
   physics: {
     default: "arcade",
   },
+  input: {
+    windowEvents: false,
+  },
 };
 
 const game = new Phaser.Game(config);
