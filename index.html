@@ -14,158 +14,12 @@
                 align-items: center;
                 height: 100vh;
             }
-            #auth-container {
-                display: flex;
-                flex-direction: column;
-                align-items: center;
-                justify-content: center;
-                position: absolute;
-                inset: 0;
-                z-index: 10;
-                background: #f5f0e8;
-            }
-            #auth-container h1 {
-                font-family: Arial, sans-serif;
-                color: #151515;
-                margin-bottom: 24px;
-            }
-            #login-form,
-            #signup-form {
-                display: flex;
-                flex-direction: column;
-                gap: 12px;
-                width: 300px;
-            }
-            #login-form input,
-            #signup-form input {
-                padding: 10px 12px;
-                font-size: 16px;
-                border: 2px solid #ccc;
-                border-radius: 8px;
-                outline: none;
-                font-family: Arial, sans-serif;
-            }
-            #login-form input:focus,
-            #signup-form input:focus {
-                border-color: #151515;
-            }
-            .btn-primary {
-                padding: 10px;
-                font-size: 16px;
-                border: none;
-                border-radius: 8px;
-                cursor: pointer;
-                font-family: Arial, sans-serif;
-                font-weight: bold;
-                background: #151515;
-                color: #f5f0e8;
-            }
-            .auth-error {
-                color: #d32f2f;
-                font-family: Arial, sans-serif;
-                font-size: 14px;
-                min-height: 20px;
-                text-align: center;
-            }
-            .auth-switch {
-                font-family: Arial, sans-serif;
-                font-size: 14px;
-                color: #666;
-                text-align: center;
-                margin: 4px 0 0;
-            }
-            .auth-switch a {
-                color: #151515;
-                font-weight: bold;
-                text-decoration: none;
-            }
-            #logout-btn {
-                display: none;
-                position: fixed;
-                top: 8px;
-                right: 12px;
-                z-index: 20;
-                padding: 6px 14px;
-                font-size: 13px;
-                background: #151515;
-                color: #f5f0e8;
-                border: none;
-                border-radius: 6px;
-                cursor: pointer;
-                font-family: Arial, sans-serif;
-            }
-            #posthog-brickbreak {
-                display: none;
-            }
         </style>
         <script>
             !function(t,e){var o,n,p,r;e.__SV||(window.posthog && window.posthog.__loaded)||(window.posthog=e,e._i=[],e.init=function(i,s,a){function g(t,e){var o=e.split(".");2==o.length&&(t=t[o[0]],e=o[1]),t[e]=function(){t.push([e].concat(Array.prototype.slice.call(arguments,0)))}}(p=t.createElement("script")).type="text/javascript",p.crossOrigin="anonymous",p.async=!0,p.src=s.api_host.replace(".i.posthog.com","-assets.i.posthog.com")+"/static/array.js",(r=t.getElementsByTagName("script")[0]).parentNode.insertBefore(p,r);var u=e;for(void 0!==a?u=e[a]=[]:a="posthog",u.people=u.people||[],u.toString=function(t){var e="posthog";return"posthog"!==a&&(e+="."+a),t||(e+=" (stub)"),e},u.people.toString=function(){return u.toString(1)+".people (stub)"},o="Ii init Di qi Sr Bi Zi Pi capture calculateEventProperties Yi register register_once register_for_session unregister unregister_for_session Xi getFeatureFlag getFeatureFlagPayload getFeatureFlagResult isFeatureEnabled reloadFeatureFlags updateFlags updateEarlyAccessFeatureEnrollment getEarlyAccessFeatures on onFeatureFlags onSurveysLoaded onSessionId getSurveys getActiveMatchingSurveys renderSurvey displaySurvey cancelPendingSurvey canRenderSurvey canRenderSurveyAsync Ji identify setPersonProperties group resetGroups setPersonPropertiesForFlags resetPersonPropertiesForFlags setGroupPropertiesForFlags resetGroupPropertiesForFlags reset setIdentity clearIdentity get_distinct_id getGroups get_session_id get_session_replay_url alias set_config startSessionRecording stopSessionRecording sessionRecordingStarted captureException startExceptionAutocapture stopExceptionAutocapture loadToolbar get_property getSessionProperty Wi Vi createPersonProfile setInternalOrTestUser Gi Fi tn opt_in_capturing opt_out_capturing has_opted_in_capturing has_opted_out_capturing get_explicit_consent_status is_capturing clear_opt_in_out_capturing $i debug Tr Ui getPageViewId captureTraceFeedback captureTraceMetric Ri".split(" "),n=0;n<o.length;n++)g(u,o[n]);e._i.push([i,s,a])},e.__SV=1)}(document,window.posthog||[]);
         </script>
     </head>
     <body>
-        <div id="auth-container">
-            <h1>Brick Breaker</h1>
-            <form id="login-form" onsubmit="return false;">
-                <input
-                    type="email"
-                    id="login-email"
-                    placeholder="Email"
-                    autocomplete="email"
-                    required
-                />
-                <input
-                    type="password"
-                    id="login-password"
-                    placeholder="Password"
-                    autocomplete="current-password"
-                    required
-                />
-                <button type="button" id="login-btn" class="btn-primary">
-                    Log In
-                </button>
-                <div id="login-error" class="auth-error"></div>
-                <p class="auth-switch">
-                    Don't have an account?
-                    <a href="#" id="show-signup">Sign Up</a>
-                </p>
-            </form>
-            <form
-                id="signup-form"
-                style="display: none"
-                onsubmit="return false;"
-            >
-                <input
-                    type="email"
-                    id="signup-email"
-                    placeholder="Email"
-                    autocomplete="email"
-                    required
-                />
-                <input
-                    type="password"
-                    id="signup-password"
-                    placeholder="Password"
-                    autocomplete="new-password"
-                    required
-                />
-                <input
-                    type="password"
-                    id="signup-confirm-password"
-                    placeholder="Confirm Password"
-                    autocomplete="new-password"
-                    required
-                />
-                <button type="button" id="signup-btn" class="btn-primary">
-                    Sign Up
-                </button>
-                <div id="signup-error" class="auth-error"></div>
-                <p class="auth-switch">
-                    Already have an account?
-                    <a href="#" id="show-login">Log In</a>
-                </p>
-            </form>
-        </div>
-        <button id="logout-btn">Log out</button>
         <div id="posthog-brickbreak"></div>
         <div
             style="
@@ -204,10 +58,8 @@
                 >Bomb icons created by Freepik - Flaticon</a
             >
         </div>
-        <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
         <script src="lib/phaser.min.js"></script>
         <script src="main.js"></script>
-        <script src="auth.js"></script>
         <script>
             function initPostHog() {
                 posthog.init(

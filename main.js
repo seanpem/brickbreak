@@ -30,7 +30,6 @@ class Breakout extends Phaser.Scene {
   }
 
   create() {
-    //  Wait for PostHog feature flags to load
     posthog.onFeatureFlags(() => {
       this.bombEnabled = posthog.getFeatureFlag("bomb-power-up") === "test";
     });
