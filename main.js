@@ -15,7 +15,7 @@ class Breakout extends Phaser.Scene {
   }
 
   preload() {
-    this.load.image("ball", "assets/hedgehog.png");
+    this.load.image("ball", "assets/max-rolled.png");
     this.load.image("brick_blue", "assets/brick1D4AFF.png");
     this.load.image("brick_orange", "assets/brickDC9300.png");
     this.load.image("brick_dark", "assets/brick151515.png");
