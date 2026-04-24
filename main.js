@@ -22,9 +22,9 @@ class Breakout extends Phaser.Scene {
     this.load.image("brick_red", "assets/brickF54E00.png");
     this.load.image("brick_grey", "assets/brickBFBFBC.png");
     this.load.image("brick_white", "assets/brickEEEFE9.png");
-    this.load.image("powerup_slow", "assets/hourglass.png");
-    this.load.image("powerup_multi", "assets/three.png");
-    this.load.image("powerup_wide", "assets/expand.png");
+    this.load.image("powerup_slow", "assets/clocks.png");
+    this.load.image("powerup_multi", "assets/triple.png");
+    this.load.image("powerup_wide", "assets/sleeping.png");
     this.load.image("powerup_bomb", "assets/bomb.png");
     this.load.image("secret_hog", "assets/secret_hog.png");
   }
@@ -81,6 +81,13 @@ class Breakout extends Phaser.Scene {
       .image(400, 500, "ball")
       .setCollideWorldBounds(true)
       .setBounce(1);
+    const ballMax = 53;
+    const ballRatio = this.ball.width / this.ball.height;
+    if (ballRatio >= 1) {
+      this.ball.setDisplaySize(ballMax, ballMax / ballRatio);
+    } else {
+      this.ball.setDisplaySize(ballMax * ballRatio, ballMax);
+    }
     this.ball.setData("onPaddle", true);
 
     this.paddle = this.physics.add.image(400, 550, "paddle").setImmovable();
@@ -175,7 +182,13 @@ class Breakout extends Phaser.Scene {
         "powerup_" + powerupType,
       );
       pu.setData("type", powerupType);
-      pu.setDisplaySize(20, 20);
+      const maxDim = 40;
+      const ratio = pu.width / pu.height;
+      if (ratio >= 1) {
+        pu.setDisplaySize(maxDim, maxDim / ratio);
+      } else {
+        pu.setDisplaySize(maxDim * ratio, maxDim);
+      }
       pu.body.setVelocityY(150);
     }
 
@@ -201,11 +214,15 @@ class Breakout extends Phaser.Scene {
         this.wideTimer = null;
       });
     } else if (type === "multi") {
+      //  Spawn from an active ball — prefer the main ball, fall back to any extra
+      let source = this.ball.visible ? this.ball : this.extraBalls.find((b) => b.active);
+      if (!source) source = this.ball;
       for (let i = 0; i < 2; i++) {
         const extra = this.physics.add
-          .image(this.ball.x, this.ball.y, "ball")
+          .image(source.x, source.y, "ball")
           .setCollideWorldBounds(true)
           .setBounce(1);
+        extra.setDisplaySize(this.ball.displayWidth, this.ball.displayHeight);
         const angle = -45 + i * 90;
         const rad = Phaser.Math.DegToRad(angle);
         extra.setVelocity(Math.cos(rad) * 300, Math.sin(rad) * 300);
